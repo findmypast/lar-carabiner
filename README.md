@@ -114,6 +114,6 @@ Carabiner::display('jquery'); // group name defined as jquery
 
 ### Credits
 
-All to original developpers i mainly adapted the script for laravel.
+All Credits to original developpers i mainly adapted the script for laravel.
 
 

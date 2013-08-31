@@ -1077,7 +1077,7 @@ class Carabiner {
 			case 'js':
 			case 'css':
 
-				foreach( $files as $file ){
+				foreach( (array)$files as $file ){
 
 					$ext = substr( strrchr( $file, '.' ), 1 );
 					$fl = strlen(substr( $file, 0, -(strlen($flag)+1) ));
@@ -1099,7 +1099,7 @@ class Carabiner {
 			case 'both':
 			default:
 
-				foreach( $files as $file ){
+				foreach( (array)$files as $file ){
 
 					$ext = substr( strrchr( $file, '.' ), 1 );
 					$fl = strlen(substr( $file, 0, -3 ));
