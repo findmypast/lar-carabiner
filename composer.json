@@ -1,0 +1,29 @@
+{
+    "name": "weboap/carabiner",
+    "description": "A port of CI Carabiner Asset Management by @tonydewan for laravel 4",
+    "keywords": ["framework", "laravel","Carabiner"],
+    "license": "BSD-2-Clause",
+    "authors": [
+        {
+            "name": "weboAp",
+            "email": "weboap@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/config": "4.0.*@dev",
+        "illuminate/filesystem": "4.0.*@dev",
+        "illuminate/log": "4.0.*@dev"
+        
+        
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
+        "psr-0": {
+            "Weboap\\Carabiner": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
