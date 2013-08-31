@@ -26,12 +26,20 @@ then run php composer.phar update
 
 ## Step 2
 
-Add 'Weboap\Carabiner\CarabinerServiceProvider' to the list of service providers in app/config/app.php
+Add
+``` php
+'Weboap\Carabiner\CarabinerServiceProvider'
+``` 
+
+to the list of service providers in app/config/app.php
 
 ## Step 3 
 run     php artisan config:publish weboap/carabiner
 
-to publish carabiner config to app/config/packages/weboap/carabiner
+to publish carabiner config to
+``` php
+app/config/packages/weboap/carabiner
+``` 
 
 visit the config file that you just published to tune
 
@@ -47,7 +55,7 @@ to configure carabiner in runtime
 you can use
 
 o configure Carabiner using the config() method, do this:
-
+``` php
 $carabiner_config = array(
     'script_dir' => 'assets/scripts/', 
     'style_dir'  => 'assets/styles/',
@@ -59,10 +67,11 @@ $carabiner_config = array(
         
 Carabiner::config($carabiner_config);
 
-
+```
 
 Add assets like so:
 
+``` php
 // add a js file
 Carabiner::js('scripts.js');
     
@@ -97,11 +106,11 @@ Carabiner::css('spec.css', 'screen', 'spec-min.css', TRUE, FALSE, 'spec');
 
 
 
-To display a group, pass the group name to the display function:
+//To display a group, pass the group name to the display function:
 // display group
 Carabiner::display('jquery'); // group name defined as jquery  
 
-
+``` 
 
 ### Credits
 
