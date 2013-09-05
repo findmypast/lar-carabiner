@@ -21,8 +21,10 @@ Just add to  `composer.json` file:
 }
 ```
 
-then run php composer.phar update
-
+then run 
+``` php
+php composer.phar update
+```
 
 ## Step 2
 
@@ -34,7 +36,11 @@ Add
 to the list of service providers in app/config/app.php
 
 ## Step 3 
-run     php artisan config:publish weboap/carabiner
+run
+
+``` php
+php artisan config:publish weboap/carabiner
+``` 
 
 to publish carabiner config to
 ``` php
