@@ -1,13 +1,13 @@
 laravel4-carabiner
 ==============
 
-A port of CI Carabiner Asset Management by @tonydewan for laravel 4
+A port of CI Carabiner Asset Management by @tonydewan for Laravel 4.
 
 
 ### Installation
 
 
-The recommended way to install Carabiner  is through composer.
+The recommended way to install Carabiner is through composer.
 
 ## Step 1
 
@@ -36,31 +36,31 @@ Add
 to the list of service providers in app/config/app.php
 
 ## Step 3 
-run
+
+Run
 
 ``` php
 php artisan config:publish weboap/carabiner
 ``` 
 
 to publish carabiner config to
+
 ``` php
 app/config/packages/weboap/carabiner
 ``` 
 
-visit the config file that you just published to tune
+then visit the config file that you just published to tune.
 
 
 
 ###  Usage
 
-for usage follow the original post and wiki page as follow
+For usage follow the original post and wiki page as follow
 per original post @ http://ellislab.com/forums/viewthread/117966/
-or https://github.com/EllisLab/CodeIgniter/wiki/Carabiner
+or https://github.com/EllisLab/CodeIgniter/wiki/Carabiner.
 
-to configure carabiner in runtime
-you can use
+To configure Carabiner using the config() method, do this:
 
-o configure Carabiner using the config() method, do this:
 ``` php
 $carabiner_config = array(
     'script_dir' => 'assets/scripts/', 
@@ -88,9 +88,9 @@ Carabiner::css('reset.css');
 Carabiner::css('admin/print.css','print');
 
 
-groups...
+// groups...
 
- // Define JS
+// Define JS
 $js = array(
     array('prototype.js'),
     array('scriptaculous.js')
@@ -114,12 +114,12 @@ Carabiner::css('spec.css', 'screen', 'spec-min.css', TRUE, FALSE, 'spec');
 
 //To display a group, pass the group name to the display function:
 // display group
-Carabiner::display('jquery'); // group name defined as jquery  
+Carabiner::display('jquery'); // group name defined as jQuery  
 
 ``` 
 
 ### Credits
 
-All Credits to original developpers i mainly adapted the script for laravel.
+All Credits to original developers I mainly adapted the script for Laravel.
 
 
