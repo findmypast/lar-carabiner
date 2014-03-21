@@ -56,6 +56,7 @@ class Carabiner {
 
 
         protected $base_uri = '';
+        protected $charset = 'UTF-8';
 
         protected $script_dir  = '';
 	protected $script_path = '';
@@ -69,18 +70,18 @@ class Carabiner {
 	protected $cache_path = '';
 	protected $cache_uri  = '';
 
-	protected $dev;
-	protected $combine;
+	protected $dev  = false;
+	protected $combine = true;
         
-	protected $minify_js;
-	protected $minify_css;
-	protected $force_curl;
+	protected $minify_js = true;
+	protected $minify_css = true;
+	protected $force_curl = true;
 
 	private $js  = array('main'=>array());
 	private $css = array('main'=>array());
 
        
-        private $carabiner_config = array();
+        protected $carabiner_config = array();
         private $group = array();
 
     
@@ -165,8 +166,8 @@ class Carabiner {
         $this->jsmin = $jsmin;
         $this->url  = $url;
         
-        $this->carabiner_config =  $this->setting->get('carabiner::config');
-        
+        $carabiner_config =  $this->setting->get('carabiner::config');
+         $this->config($carabiner_config);
     }
     
     
@@ -178,13 +179,10 @@ class Carabiner {
 	*			base_uri(string), dev(bool), combine(bool), minify_js(bool), minify_css(bool), and force_curl(bool) are optional.
 	* @return   Void
 	*/
-	public function config(array $c = array())
+	public function config(array $config)
 	{
-
-		
-              
-                $config = array_merge($this->carabiner_config, $c);
-                
+               
+               
                 foreach ($config as $key => $value)
 		{
 			if( $key != '')
@@ -236,7 +234,6 @@ class Carabiner {
 		$this->cache_uri = $this->base_uri.ltrim( $this->cache_dir, '/' );
                 
                
-
 	}
         
         
@@ -894,7 +891,13 @@ class Carabiner {
                 
                         $contents = $this->curl->get( $abs_ref );
 		else:
-                        $contents = $this->file->get( $abs_ref );
+                     
+                      if( ! $this->file->isFile( $abs_ref ) )
+                      {
+                        throw new FileNotFoundException("One or More Assets in Groups specified is not found!");
+                      }
+                      $contents = $this->file->get( $abs_ref );
+                       
 		endif;
 
 		return $contents;

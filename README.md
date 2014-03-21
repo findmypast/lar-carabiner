@@ -59,7 +59,7 @@ For usage follow the original post and wiki page as follow
 per original post @ http://ellislab.com/forums/viewthread/117966/
 or https://github.com/EllisLab/CodeIgniter/wiki/Carabiner.
 
-if you need to configure Carabiner in runetime just use the config() method, like this:
+another way to configure configure Carabiner will be using the config() method:
 
 ``` php
 $carabiner_config = array(
