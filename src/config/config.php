@@ -67,7 +67,7 @@ return array(
 |
 */
 
-'dev' => FALSE,
+'dev' => false,
 
 
 /*
@@ -79,7 +79,7 @@ return array(
 |
 */
 
-'combine' => false,
+'combine' => true,
 
 
 /*
@@ -91,7 +91,7 @@ return array(
 |
 */
 
-'minify_js' => false,
+'minify_js' => true,
 
 
 /*
@@ -103,7 +103,7 @@ return array(
 |
 */
 
-'minify_css' => false,
+'minify_css' => true,
 
 /*
 |--------------------------------------------------------------------------
@@ -115,7 +115,7 @@ return array(
 |
 */
 
-'force_curl' => TRUE,
+'force_curl' => true,
 
 
 /*

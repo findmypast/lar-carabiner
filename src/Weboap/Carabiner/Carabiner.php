@@ -45,6 +45,7 @@ use Weboap\Carabiner\Exceptions\MissingPathException;
 use Weboap\Carabiner\Exceptions\WritableFolderException;
 use Weboap\Carabiner\Exceptions\FileNotFoundException;
 use Weboap\Carabiner\Exceptions\MissingArgumentException;
+
 use Illuminate\Config\Repository as Config;
 use Illuminate\Filesystem\Filesystem as File;
 use Illuminate\Routing\UrlGenerator as URL;
@@ -55,123 +56,179 @@ use CssMin, JSMin, Curl;
 
 class Carabiner {
 
-
-        protected $base = '';
-        protected $charset = 'UTF-8';
-
-        protected $scriptDir  = '';
-	protected $script_path = '';
-	protected $script_uri  = '';
-
-	protected $styleDir  = '';
-	protected $style_path = '';
-	protected $style_uri  = '';
-
-	protected $cacheDir  = '';
-	protected $cache_path = '';
-	protected $cache_uri  = '';
-
-	protected $dev  = false;
-	protected $combine = true;
+            /**
+            * Base uri of the site, like 'http://www.example.com/'.
+            *
+            * @var string
+            */
+            protected $base;
+            
+             /**
+            * Charset.
+            *
+            * @var string
+            */
+            protected $charset = 'UTF-8';
+            
+             /**
+            *  Path to the script directory relatif to server public root.
+            *
+            * @var string
+            */
+            protected $scriptDir  = '';
+            
+             /**
+            *  Real Path to the script directory.
+            *
+            * @var string
+            */
+            protected $script_path;
+            
+             /**
+            *  Script uri.
+            *
+            * @var string
+            */
+            protected $script_uri;
+            
+             /**
+            *  Path to the css directory relatif to server public root.
+            *
+            * @var string
+            */
+            protected $styleDir;
+            
+            /**
+            *  Real Path to the css directory.
+            *
+            * @var string
+            */
+            protected $style_path;
+            
+             /**
+            *  Script uri.
+            *
+            * @var string
+            */
+            protected $style_uri;
+            
+             /**
+            *  Path to the Cache directory relatif to server public root.
+            *
+            * @var string
+            */
+            protected $cacheDir;
+            protected $cache_path;
+            protected $cache_uri;
+    
+            protected $dev  = false;
+            protected $combine = true;
+            
+            protected $minify_js = true;
+            protected $minify_css = true;
+            protected $force_curl = true;
+            
+            protected $groups = array();
+    
+            private $js  = array('main'=>array());
+            private $css = array('main'=>array());
+    
+           
+            protected $carabiner_config = array();
+            
+            
+            private $group = array();
+    
         
-	protected $minify_js = true;
-	protected $minify_css = true;
-	protected $force_curl = true;
-
-	private $js  = array('main'=>array());
-	private $css = array('main'=>array());
-
+    
        
-        protected $carabiner_config = array();
-        private $group = array();
-
-    
-
-   
-    
-    /**
-     * Illuminate setting repository.
-     *
-     * @var Illuminate\Config\Repository $setting
-     */
-    protected $setting;
-    
-    
-    
-     /**
-     * Create a new view instance.
-     *
-     * @param  Illuminate\View\Environment  $view
-     * @return void
-     */
-    protected $view;
-
-    
-     /**
-     * Create a new File instance.
-     *
-     * @param  Weboap\Carabiner\File $file
-     * @return void
-     */
-    protected $file;
-    
-    /**
-     * Create a new Curl instance.
-     *
-     * @param  Curl $curl
-     * @return void
-     */
-    protected $curl;
-    
-    /**
-     * Create a new CssMin instance.
-     *
-     * @param  CssMin $cssmin
-     * @return void
-     */
-    protected $cssmin;
-    
-    /**
-     * Create a new JSMin instance.
-     *
-     * @param  JSMin $jsmin
-     * @return void
-     */
-    protected $jsmin;
-    
-    
-    /**
-     * Create a new URL instance.
-     *
-     * @param  Illuminate\Routing\UrlGenerator $jsmin
-     * @return void
-     */
-    protected $url;
-      
-      
-      
-    public function __construct(
-                                Config $setting,
-                                File $file,
-                                Curl $curl,
-                                CssMin $cssmin,
-                                JSMin $jsmin,
-                                URL $url
-                                )
-    {
-    
-        $this->setting = $setting;
-        $this->file = $file;
-        $this->curl = $curl;
-        $this->cssmin = $cssmin;
-        $this->jsmin = $jsmin;
-        $this->url  = $url;
         
-        $carabiner_config =  $this->setting->get('carabiner::config');
-         $this->config($carabiner_config);
-    }
+        /**
+         * Illuminate setting repository.
+         *
+         * @var Illuminate\Config\Repository $setting
+         */
+        protected $setting;
+        
+        
+        
+         /**
+         * Create a new view instance.
+         *
+         * @param  Illuminate\View\Environment  $view
+         * @return void
+         */
+        protected $view;
+    
+        
+         /**
+         * Create a new File instance.
+         *
+         * @param  Weboap\Carabiner\File $file
+         * @return void
+         */
+        protected $file;
+        
+        /**
+         * Create a new Curl instance.
+         *
+         * @param  Curl $curl
+         * @return void
+         */
+        protected $curl;
+        
+        /**
+         * Create a new CssMin instance.
+         *
+         * @param  CssMin $cssmin
+         * @return void
+         */
+        protected $cssmin;
+        
+        /**
+         * Create a new JSMin instance.
+         *
+         * @param  JSMin $jsmin
+         * @return void
+         */
+        protected $jsmin;
+        
+        
+        /**
+         * Create a new URL instance.
+         *
+         * @param  Illuminate\Routing\UrlGenerator $jsmin
+         * @return void
+         */
+        protected $url;
+          
+      
+      
+        public function __construct(
+                                    Config $setting,
+                                    File $file,
+                                    Curl $curl,
+                                    CssMin $cssmin,
+                                    JSMin $jsmin,
+                                    URL $url
+                                    )
+        {
+        
+            $this->setting = $setting;
+            $this->file = $file;
+            $this->curl = $curl;
+            $this->cssmin = $cssmin;
+            $this->jsmin = $jsmin;
+            $this->url  = $url;
+            
+            $carabiner_config =  $this->setting->get('carabiner::config');
+             $this->config($carabiner_config);
+        }
     
     
+    
+    
+  
   
  	/**
 	* Load Config
@@ -1159,13 +1216,13 @@ class Carabiner {
         {
           if( ! is_string( $asset ) || $asset === '')
            {
-            throw new MissingArgumentException("Carabiner: Missing Asset Name!");
+            throw new MissingArgumentException("Carabiner: Missing Asset or Url Name!");
            }
            
            
            if( ! $this->isURL( $asset ) && ! $this->file->exists( $asset ))
            {
-            throw new MissingArgumentException("Carabiner: The asset named '{$asset}' does not exist.");
+            throw new MissingArgumentException("Carabiner: The asset named '{$asset}' or url does not exist.");
            }
           
         }
