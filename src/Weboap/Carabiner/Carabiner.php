@@ -44,6 +44,7 @@
 use Weboap\Carabiner\Exceptions\MissingPathException;
 use Weboap\Carabiner\Exceptions\WritableFolderException;
 use Weboap\Carabiner\Exceptions\FileNotFoundException;
+use Weboap\Carabiner\Exceptions\MissingArgumentException;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Filesystem\Filesystem as File;
 use Illuminate\Routing\UrlGenerator as URL;
@@ -55,18 +56,18 @@ use CssMin, JSMin, Curl;
 class Carabiner {
 
 
-        protected $base_uri = '';
+        protected $base = '';
         protected $charset = 'UTF-8';
 
-        protected $script_dir  = '';
+        protected $scriptDir  = '';
 	protected $script_path = '';
 	protected $script_uri  = '';
 
-	protected $style_dir  = '';
+	protected $styleDir  = '';
 	protected $style_path = '';
 	protected $style_uri  = '';
 
-	protected $cache_dir  = '';
+	protected $cacheDir  = '';
 	protected $cache_path = '';
 	protected $cache_uri  = '';
 
@@ -175,7 +176,7 @@ class Carabiner {
  	/**
 	* Load Config
 	* @access	public
-	* @param	Array of config variables. Requires script_dir(string), style_dir(string), and cache_dir(string).
+	* @param	Array of config variables. Requires script_dir(string), styleDir(string), and cacheDir(string).
 	*			base_uri(string), dev(bool), combine(bool), minify_js(bool), minify_css(bool), and force_curl(bool) are optional.
 	* @return   Void
 	*/
@@ -208,30 +209,29 @@ class Carabiner {
                     
 
 		// set the default value for base_uri from the config
-		if( ! isset( $this->base_uri ) || $this->base_uri == '' )
+		if( ! isset( $this->base ) || ! $this->isURL( $this->base ) )
                 {
-                    $this->base_uri = $this->url->to('/').'/';
+                    $this->base = $this->url->to('/').'/';
                 }
+                
                 
 		// use the provided values to define the rest of them
                 $path = public_path().'/';
                 
 
-		
-                
-                $this->_validate_folder( $this->script_path = $path.ltrim( $this->script_dir, '/')  );
+                $this->_validate_folder( $this->script_path = $path.ltrim( $this->scriptDir, '/')  );
                
-                $this->script_uri = $this->base_uri.ltrim( $this->script_dir, '/');
+                $this->script_uri = $this->base.ltrim( $this->scriptDir, '/');
 
-                $this->_validate_folder( $this->style_path = $path.ltrim($this->style_dir, '/')  );
+                $this->_validate_folder( $this->style_path = $path.ltrim($this->styleDir, '/')  );
                 
-                $this->style_uri = $this->base_uri.ltrim($this->style_dir, '/');
+                $this->style_uri = $this->base.ltrim($this->styleDir, '/');
 
-		$this->cache_path = $path.ltrim( $this->cache_dir, '/');
+		$this->cache_path = $path.ltrim( $this->cacheDir, '/');
                 
                 $this->_validate_folder( $this->cache_path , true  );
                 
-		$this->cache_uri = $this->base_uri.ltrim( $this->cache_dir, '/' );
+		$this->cache_uri = $this->base.ltrim( $this->cacheDir, '/' );
                 
                
 	}
@@ -304,6 +304,8 @@ class Carabiner {
 				$this->_asset('js', $d, $p, $c, $m, NULL, $g);
 
 			}
+                        //validate asset;
+                        $this->validateAsset($d);
 
 		}else{
 
@@ -333,7 +335,7 @@ class Carabiner {
 			if( is_array($dev_file[0]) ){
 
 				foreach($dev_file as $file){
-
+                                        
 					$d = $file[0];
 					$m = (isset($file[1])) ? $file[1] : $media;
 					$p = (isset($file[2])) ? $file[2] : '';
@@ -357,6 +359,9 @@ class Carabiner {
 				$this->_asset('css', $d, $p, $c, $y, $m, $g);
 
 			}
+                        
+                        //validate css asset
+                        $this->validateAsset( $this->style_path.$d );
 
 		}else{
 
@@ -407,7 +412,8 @@ class Carabiner {
 	*/
 	private function _asset($type, $dev_file, $prod_file = '', $combine, $minify, $media = 'screen', $group = 'main')
 	{
-		if ($type == 'css') :
+		
+                if ($type == 'css') :
 
 			$this->css[$group][$media][] = array( 'dev'=>$dev_file );
 			$index = count($this->css[$group][$media]) - 1;
@@ -428,6 +434,10 @@ class Carabiner {
 		endif;
 
 	}
+        
+        
+        
+        
 
 
 	/**
@@ -819,8 +829,11 @@ class Carabiner {
 
 
 		foreach($files as $file):
-
+                
 			$v = (isset($file['prod']) ) ? 'prod' : 'dev';
+                        
+                        //Validate Asset
+                        $this->validateAsset($path.$file[$v] );
 
 			if( (isset($file['minify']) && $file['minify'] == true) || (!isset($file['minify']) && $minify) ):
 
@@ -828,7 +841,8 @@ class Carabiner {
 
 			else:
 
-				$r = ( $this->isURL($file[$v]) ) ? $file[$v] : realpath($path.$file[$v]);
+                                $r = ( $this->isURL($file[$v] )  ? $file[$v] : realpath($path.$file[$v]) );
+                              
 				$file_data .=  $this->_get_contents( $r ) ."\n";
 
 			endif;
@@ -849,9 +863,11 @@ class Carabiner {
 	*/
 	private function _minify($flag, $file_ref)
 	{
-
+                
 		$path = ($flag == 'css') ? $this->style_path : $this->script_path;
-		$ref  = ( $this->isURL($file_ref) ) ? $file_ref : realpath($path.$file_ref);
+                
+		$ref  = ( $this->isURL($file_ref)  ? $file_ref : realpath($path.$file_ref) );
+                
                 
                 $contents = $this->_get_contents( $ref );
                 
@@ -892,10 +908,6 @@ class Carabiner {
                         $contents = $this->curl->get( $abs_ref );
 		else:
                      
-                      if( ! $this->file->isFile( $abs_ref ) )
-                      {
-                        throw new FileNotFoundException("One or More Assets in Groups specified is not found!");
-                      }
                       $contents = $this->file->get( $abs_ref );
                        
 		endif;
@@ -941,7 +953,7 @@ class Carabiner {
 			case 'css':
 
 				$dir = ( $this->isURL($ref) ) ? '' : ( ($cache) ? $this->cache_uri : $this->style_uri );
-
+                            
 				return '<link type="text/css" rel="stylesheet" href="'.$dir.$ref.'" media="'.$media.'" />'."\r\n";
 
 			break;
@@ -1000,7 +1012,6 @@ class Carabiner {
 
 					$ext = substr( strrchr( $file, '.' ), 1 );
 					$fl = strlen(substr( $file, 0, -3 ));
-                                        
                                         
 					if ( ($ext == 'js' || $ext == 'css') && $fl >= 42 && ( filemtime( $file ) < $before) ) {
 
@@ -1123,17 +1134,42 @@ class Carabiner {
 	* Checks if the provided string is a URL. Allows for port, path and query string validations.
 	* This should probably be moved into a helper file, but I hate to add a whole new file for
 	* one little 2-line function.
-	* @access	public
+	* @access	private
 	* @param	string to be checked
 	* @return   boolean	Returns TRUE/FALSE
 	*/
 	
-	public function isURL($value)
+	private function isURL($value)
         {
         
             $pattern = '@(((https?|ftp):)?//([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)@';
             
              return  (boolean) preg_match($pattern, $value);
+        }
+        
+        
+ 
+        /**
+	* validateAsset
+	* Checks checks the asset to be a url or an existing file
+	* @access	private
+	* @param	string to be checked
+	* @return   Exception	Returns Exception if fails
+	*/
+        
+        private function validateAsset( $asset )
+        {
+          if( ! is_string( $asset ) || $asset === '')
+           {
+            throw new MissingArgumentException("Carabiner: Missing Asset Name!");
+           }
+           
+           
+           if( ! $this->isURL( $asset ) && ! $this->file->exists( $asset ))
+           {
+            throw new MissingArgumentException("Carabiner: The asset named '{$asset}' does not exist.");
+           }
+          
         }
         
 

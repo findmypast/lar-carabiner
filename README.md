@@ -66,7 +66,7 @@ $carabiner_config = array(
     'script_dir' => 'assets/scripts/', 
     'style_dir'  => 'assets/styles/',
     'cache_dir'  => 'assets/cache/',
-    'base_uri'   => 'http://www.example.com/'
+    'base'   => 'http://www.example.com/'
     'combine'    => TRUE,
     'dev'        => FALSE
 );

@@ -3,7 +3,7 @@
 return array(
     
     
-  'base_uri'   => URL::to('/').'/',  
+  'base'   => URL::to('/').'/',  
     
   'charset' => 'UTF-8',
   
@@ -21,7 +21,7 @@ return array(
 |
 */
 
-'script_dir' => '/js/',
+'scriptDir' => '/js/',
 
 
 
@@ -35,7 +35,7 @@ return array(
 |
 */
 
-'style_dir' => '/css/',
+'styleDir' => '/css/',
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +47,7 @@ return array(
 |
 */
 
-'cache_dir' => '/cache/',
+'cacheDir' => '/cache/',
 
 
 
@@ -79,7 +79,7 @@ return array(
 |
 */
 
-'combine' => TRUE,
+'combine' => false,
 
 
 /*
