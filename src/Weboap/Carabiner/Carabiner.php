@@ -196,9 +196,10 @@ class Carabiner {
                 {
                     foreach( $this->groups as $group_name => $assets){
     
-                                $this->group($group_name, $assets);
+                               $this->group($group_name, $assets);
                             
                     }
+                    
  
                 }
                 
@@ -728,7 +729,7 @@ class Carabiner {
 		} elseif($this->combine && !$this->minify_css) { // we're combining bot not minifying
 
 			foreach($this->css[$group] as $media => $refs):
-
+                        
 				// lets try to cache it, shall we?
 				$lastmodified = 0;
 				$files = array();

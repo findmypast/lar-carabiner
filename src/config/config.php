@@ -91,7 +91,7 @@ return array(
 |
 */
 
-'minify_js' => TRUE,
+'minify_js' => false,
 
 
 /*
@@ -124,40 +124,12 @@ return array(
 |--------------------------------------------------------------------------
 |
 | Any groups defined here will automatically be included.  Of course, they
-| won't be displayed unless you explicity display them ( like this: $this->carabiner->display('jquery') )
+| won't be displayed unless you explicity display them ( like this: Carabiner::display('jquery') )
 | See docs for more.
 |
 */
 
-'groups' =>
-        array(
-            'query' => array(
-
-                            'js' => array(
-    
-                            array('http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js', 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js', TRUE, FALSE)
-                            
-                                        )
-                        ),
-            'jqueryui'=> array(
-
-                            'js' => array(
-
-                            array('http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js', 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js', TRUE, FALSE),
-                            array('http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js', TRUE, FALSE)
-
-                                        )
-                            ),
-            'chrome-frame' =>  array(
-
-                                'js' => array(
-
-                                array('http://ajax.googleapis.com/ajax/libs/ext-core/3.0.0/ext-core-debug.js', 'http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js', TRUE, FALSE)
-
-                                            )
-                                    ),
-            
-    ),
+'groups' =>  array( ),
 
 
 );
