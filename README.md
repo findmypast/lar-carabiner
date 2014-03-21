@@ -92,8 +92,9 @@ Carabiner::css('admin/print.css','print');
 
 // Define JS
 $js = array(
-    array('prototype.js'),
-    array('scriptaculous.js')
+     array('prototype.js'),
+        array('//ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js'),
+        array('scriptaculous.js')
 );
 
 // create group
@@ -122,9 +123,9 @@ Carabiner::display('jquery'); // group name defined as jQuery
 
 All Credits to original developers I mainly adapted the script for Laravel.
 Thanks also to :
-Joe Scylla : http://code.google.com/p/cssmin/   : "natxet/CssMin"
-linkorb.com/engineering.   : https://github.com/linkorb/jsmin-php    : "linkorb/jsmin-php"
-@shuber https://github.com/hamstar/curl
+Joe Scylla ( http://code.google.com/p/cssmin/   : "natxet/CssMin"), 
+linkorb.com/engineering. (https://github.com/linkorb/jsmin-php    : "linkorb/jsmin-php"),
+@shuber ( https://github.com/hamstar/curl )
  
 
 
