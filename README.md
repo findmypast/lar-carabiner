@@ -63,9 +63,9 @@ another way to configure configure Carabiner will be using the config() method:
 
 ``` php
 $carabiner_config = array(
-    'script_dir' => 'assets/scripts/', 
-    'style_dir'  => 'assets/styles/',
-    'cache_dir'  => 'assets/cache/',
+    'scriptDir' => '/assets/js/', 
+    'styleDir'  => '/assets/css/',
+    'cacheDir'  => 'cache/',
     'base'   => 'http://www.example.com/'
     'combine'    => TRUE,
     'dev'        => FALSE
