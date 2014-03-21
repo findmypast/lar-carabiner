@@ -20,12 +20,6 @@ class CarabinerServiceProvider extends ServiceProvider {
 	{
 		$this->package('weboap/carabiner');
 		
-		include __DIR__.'/../../routes.php';
-		
-		// // Autoload other libs.
-		//\ClassLoader::addDirectories(array(
-		//	'/helpers'
-		//));
 	
 	}
 
@@ -37,8 +31,7 @@ class CarabinerServiceProvider extends ServiceProvider {
 	public function register()
 	{
 		$this->RegisterCarabiner();
-		
-		$this->RegisterFile();
+
 		$this->RegisterMinifyCss();
 		$this->RegisterJsmin();
 		
@@ -57,52 +50,42 @@ class CarabinerServiceProvider extends ServiceProvider {
 		$this->app['carabiner'] = $this->app->share(function($app)
 			{
 			    return new Carabiner(
-						
 						 $app['config'],
-						 $app['log'],
-						 $app['file'],
-						 $app['curl'],
-						 $app['minifycss'],
-						 $app['jsmin']
+						 $app['files'],
+						 $app['carabiner.curl'],
+						 $app['carabiner.minifycss'],
+						 $app['carabiner.jsmin'],
+						 $app['url']
 						 );
 			});
 		
 		
 	}
 	
-	
 
-	public function RegisterFile()
-	{
-	    $this->app['file'] = $this->app->share(function($app)
-	    {
-		return new File;
-	    });
-	}
-	
 
 	public function RegisterCurl()
 	{
-	    $this->app['curl'] = $this->app->share(function($app)
+	    $this->app['carabiner.curl'] = $this->app->share(function($app)
 	    {
-		return new Curl;
+		return new \Curl;
 	    });
 	}
 	
 	
 	public function RegisterMinifyCss()
 	{
-	    $this->app['minifycss'] = $this->app->share(function($app)
+	    $this->app['carabiner.minifycss'] = $this->app->share(function($app)
 	    {
-		return new Minifycss;
+		return new \CssMin;
 	    });
 	}
 	
 	public function RegisterJsmin()
 	{
-	    $this->app['jsmin'] = $this->app->share(function($app)
+	    $this->app['carabiner.jsmin'] = $this->app->share(function($app)
 	    {
-		return new Jsmin;
+		return new \JSMin('');
 	    });
 	}
 	
@@ -114,10 +97,6 @@ class CarabinerServiceProvider extends ServiceProvider {
 				{
 				   $loader = \Illuminate\Foundation\AliasLoader::getInstance();
 				   $loader->alias('Carabiner', 'Weboap\Carabiner\Facades\Carabiner');
-				   $loader->alias('File', 'Weboap\Carabiner\Facades\File');
-				   $loader->alias('Curl', 'Weboap\Carabiner\Facades\Curl');
-				   $loader->alias('Minifycss', 'Weboap\Carabiner\Facades\Minifycss');
-				   $loader->alias('Jsmin', 'Weboap\Carabiner\Facades\Jsmin');
 				});
 		
 		
@@ -133,7 +112,7 @@ class CarabinerServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array('carabiner', 'file', 'curl', 'minifycss');
+		return array('carabiner');
 	}
 
 }

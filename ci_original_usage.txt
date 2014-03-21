@@ -1,0 +1,191 @@
+/*
+	===============================================================================================
+	 USAGE
+	===============================================================================================
+	
+	Load the library as normal:
+	-----------------------------------------------------------------------------------------------
+		$this->load->library('carabiner');
+	-----------------------------------------------------------------------------------------------
+
+	Configuration can happen in either a config file (included), or by passing an array of values
+	to the config() method. Config options passed to the config() method will override options in
+	the	config file.
+
+	See the included config file for more info.
+
+	To configure Carabiner using the config() method, do this:
+	-----------------------------------------------------------------------------------------------
+		$carabiner_config = array(
+			'script_dir' => 'assets/scripts/',
+			'style_dir'  => 'assets/styles/',
+			'cache_dir'  => 'assets/cache/',
+			'base_uri'	 => base_url(),
+			'combine'	 => TRUE,
+			'dev' 		 => FALSE,
+			'minify_js'  => TRUE,
+			'minify_css' => TRUE
+		);
+
+		$this->carabiner->config($carabiner_config);
+	-----------------------------------------------------------------------------------------------
+
+
+	There are 9 options. 3 are required:
+
+	script_dir
+	STRING Path to the script directory.  Relative to the CI front controller (index.php)
+
+	style_dir
+	STRING Path to the style directory.  Relative to the CI front controller (index.php)
+
+	cache_dir
+	STRING Path to the cache directory.  Must be writable. Relative to the CI front controller (index.php)
+
+
+	6 are not required:
+
+	base_uri
+	STRING Base uri of the site, like http://www.example.com/ Defaults to the CI config value for
+	base_url.
+
+	dev
+	BOOL Flags whether your in a development environment or not.  See above for what this means.
+	Defaults to FALSE.
+
+	combine
+	BOOLEAN Flags whether to combine files.  Defaults to TRUE.
+
+	minify_js
+	BOOLEAN Flags whether to minify javascript. Defaults to TRUE.
+
+	minify_css
+	BOOLEAN Flags whether to minify CSS. Defaults to TRUE.
+
+	force_curl
+	BOOLEAN Flags whether cURL should always be used for URL file references. Defaults to FALSE.
+
+
+	Add assets like so:
+	-----------------------------------------------------------------------------------------------
+		// add a js file
+		$this->carabiner->js('scripts.js');
+
+		// add a css file
+		$this->carabiner->css('reset.css');
+
+		// add a css file with a mediatype
+		$this->carabiner->css('admin/print.css','print');
+	-----------------------------------------------------------------------------------------------
+
+
+	To set a (prebuilt) production version of an asset:
+	-----------------------------------------------------------------------------------------------
+		// JS: pass a second string to the method with a path to the production version
+		$this->carabiner->js('wymeditor/wymeditor.js', 'wymeditor/wymeditor.pack.js' );
+
+		// add a css file with prebuilt production version
+		$this->carabiner->css('framework/type.css', 'screen', 'framework/type.pack.css');
+	-----------------------------------------------------------------------------------------------
+
+
+	And to prevent an individual asset file from being combined:
+	-----------------------------------------------------------------------------------------------
+		// JS: pass a boolean FALSE as the third attribute of the method
+		$this->carabiner->js('wymeditor/wymeditor.js', 'wymeditor.pack.js', FALSE );
+
+		// CSS: pass a boolean FALSE as the fourth attribute of the method
+		$this->carabiner->css('framework/type.css', 'screen', 'framework/type.pack.css', FALSE);
+	-----------------------------------------------------------------------------------------------
+
+
+	You can also pass arrays (and arrays of arrays) to these methods. Like so:
+	-----------------------------------------------------------------------------------------------
+		// a single array (this is redundant, but supported anyway)
+		$this->carabiner->css( array('mobile.css', 'handheld', 'mobile.prod.css') );
+
+		// an array of arrays
+		$js_assets = array(
+			array('dev/jquery.js', 'prod/jquery.js'),
+			array('dev/jquery.ext.js', 'prod/jquery.ext.js'),
+		)
+
+		$this->carabiner->js( $js_assets );
+	-----------------------------------------------------------------------------------------------
+
+
+	Carabiner is smart enough to recognize URLs and treat them differently:
+	-----------------------------------------------------------------------------------------------
+		$this->carabiner->js('http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js');
+	-----------------------------------------------------------------------------------------------
+
+
+	You can also define groups of assets
+	-----------------------------------------------------------------------------------------------
+		// Define JS
+		$js = array(
+			array('prototype.js'),
+			array('scriptaculous.js')
+		);
+
+		// create group
+		$this->carabiner->group('prototaculous', array('js'=>$js) );
+
+
+		// an IE only group
+		$css = array('iefix.css');
+		$js = array('iefix.js');
+		$this->carabiner->group('iefix', array('js'=>$js, 'css'=>$js) );
+
+		// you can even assign an asset to a group individually
+		// by passing the group name to the last parameter of the css/js functions
+		$this->carabiner->css('spec.css', 'screen', 'spec-min.css', TRUE, FALSE, 'spec');
+	-----------------------------------------------------------------------------------------------
+
+
+	To output your assets, including appropriate markup:
+	-----------------------------------------------------------------------------------------------
+		// display css
+		$this->carabiner->display('css');
+
+		//display js
+		$this->carabiner->display('js');
+
+		// display both
+		$this->carabiner->display(); // OR $this->carabiner->display('both');
+
+		// display group
+		$this->carabiner->display('jquery'); // group name defined as jquery
+
+		// display filterd group
+		$this->carabiner->display('main', 'js'); // group name defined as main, only display JS
+
+		// return string of asset references
+		$string = $this->carabiner->display_string('main');
+	-----------------------------------------------------------------------------------------------
+	Note that the standard display function calls (the first 3 listed above) will only output
+	those assets not associated with a group (which are all included in the 'main' group).  Groups
+	must be explicitly displayed via the 4th call listed above.
+
+
+
+	Since Carabiner won't delete old cached files, you'll need to clear them out manually.
+	To do so programatically:
+	-----------------------------------------------------------------------------------------------
+		// clear css cache
+		$this->carabiner->empty_cache('css');
+
+		//clear js cache
+		$this->carabiner->empty_cache('js');
+
+		// clear both
+		$this->carabiner->empty_cache(); // OR $this->carabiner->empty_cache('both');
+
+		// clear before a certain date
+		$this->carabiner->empty_cache('both', 'now');	// String denoting a time before which cache
+														// files will be removed.  Any string that
+														// strtotime() can take is acceptable.
+														// Defaults to 'now'.
+	-----------------------------------------------------------------------------------------------
+	===============================================================================================
+*/

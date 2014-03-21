@@ -39,205 +39,17 @@
  * @todo		check for 'absolute' path in asset references
  */
 
-/*
-	===============================================================================================
-	 USAGE
-	===============================================================================================
-	
-	Load the library as normal:
-	-----------------------------------------------------------------------------------------------
-		$this->load->library('carabiner');
-	-----------------------------------------------------------------------------------------------
-
-	Configuration can happen in either a config file (included), or by passing an array of values
-	to the config() method. Config options passed to the config() method will override options in
-	the	config file.
-
-	See the included config file for more info.
-
-	To configure Carabiner using the config() method, do this:
-	-----------------------------------------------------------------------------------------------
-		$carabiner_config = array(
-			'script_dir' => 'assets/scripts/',
-			'style_dir'  => 'assets/styles/',
-			'cache_dir'  => 'assets/cache/',
-			'base_uri'	 => base_url(),
-			'combine'	 => TRUE,
-			'dev' 		 => FALSE,
-			'minify_js'  => TRUE,
-			'minify_css' => TRUE
-		);
-
-		$this->carabiner->config($carabiner_config);
-	-----------------------------------------------------------------------------------------------
 
 
-	There are 9 options. 3 are required:
+use Weboap\Carabiner\Exceptions\MissingPathException;
+use Weboap\Carabiner\Exceptions\WritableFolderException;
+use Weboap\Carabiner\Exceptions\FileNotFoundException;
+use Illuminate\Config\Repository as Config;
+use Illuminate\Filesystem\Filesystem as File;
+use Illuminate\Routing\UrlGenerator as URL;
 
-	script_dir
-	STRING Path to the script directory.  Relative to the CI front controller (index.php)
+use CssMin, JSMin, Curl;
 
-	style_dir
-	STRING Path to the style directory.  Relative to the CI front controller (index.php)
-
-	cache_dir
-	STRING Path to the cache directory.  Must be writable. Relative to the CI front controller (index.php)
-
-
-	6 are not required:
-
-	base_uri
-	STRING Base uri of the site, like http://www.example.com/ Defaults to the CI config value for
-	base_url.
-
-	dev
-	BOOL Flags whether your in a development environment or not.  See above for what this means.
-	Defaults to FALSE.
-
-	combine
-	BOOLEAN Flags whether to combine files.  Defaults to TRUE.
-
-	minify_js
-	BOOLEAN Flags whether to minify javascript. Defaults to TRUE.
-
-	minify_css
-	BOOLEAN Flags whether to minify CSS. Defaults to TRUE.
-
-	force_curl
-	BOOLEAN Flags whether cURL should always be used for URL file references. Defaults to FALSE.
-
-
-	Add assets like so:
-	-----------------------------------------------------------------------------------------------
-		// add a js file
-		$this->carabiner->js('scripts.js');
-
-		// add a css file
-		$this->carabiner->css('reset.css');
-
-		// add a css file with a mediatype
-		$this->carabiner->css('admin/print.css','print');
-	-----------------------------------------------------------------------------------------------
-
-
-	To set a (prebuilt) production version of an asset:
-	-----------------------------------------------------------------------------------------------
-		// JS: pass a second string to the method with a path to the production version
-		$this->carabiner->js('wymeditor/wymeditor.js', 'wymeditor/wymeditor.pack.js' );
-
-		// add a css file with prebuilt production version
-		$this->carabiner->css('framework/type.css', 'screen', 'framework/type.pack.css');
-	-----------------------------------------------------------------------------------------------
-
-
-	And to prevent an individual asset file from being combined:
-	-----------------------------------------------------------------------------------------------
-		// JS: pass a boolean FALSE as the third attribute of the method
-		$this->carabiner->js('wymeditor/wymeditor.js', 'wymeditor.pack.js', FALSE );
-
-		// CSS: pass a boolean FALSE as the fourth attribute of the method
-		$this->carabiner->css('framework/type.css', 'screen', 'framework/type.pack.css', FALSE);
-	-----------------------------------------------------------------------------------------------
-
-
-	You can also pass arrays (and arrays of arrays) to these methods. Like so:
-	-----------------------------------------------------------------------------------------------
-		// a single array (this is redundant, but supported anyway)
-		$this->carabiner->css( array('mobile.css', 'handheld', 'mobile.prod.css') );
-
-		// an array of arrays
-		$js_assets = array(
-			array('dev/jquery.js', 'prod/jquery.js'),
-			array('dev/jquery.ext.js', 'prod/jquery.ext.js'),
-		)
-
-		$this->carabiner->js( $js_assets );
-	-----------------------------------------------------------------------------------------------
-
-
-	Carabiner is smart enough to recognize URLs and treat them differently:
-	-----------------------------------------------------------------------------------------------
-		$this->carabiner->js('http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js');
-	-----------------------------------------------------------------------------------------------
-
-
-	You can also define groups of assets
-	-----------------------------------------------------------------------------------------------
-		// Define JS
-		$js = array(
-			array('prototype.js'),
-			array('scriptaculous.js')
-		);
-
-		// create group
-		$this->carabiner->group('prototaculous', array('js'=>$js) );
-
-
-		// an IE only group
-		$css = array('iefix.css');
-		$js = array('iefix.js');
-		$this->carabiner->group('iefix', array('js'=>$js, 'css'=>$js) );
-
-		// you can even assign an asset to a group individually
-		// by passing the group name to the last parameter of the css/js functions
-		$this->carabiner->css('spec.css', 'screen', 'spec-min.css', TRUE, FALSE, 'spec');
-	-----------------------------------------------------------------------------------------------
-
-
-	To output your assets, including appropriate markup:
-	-----------------------------------------------------------------------------------------------
-		// display css
-		$this->carabiner->display('css');
-
-		//display js
-		$this->carabiner->display('js');
-
-		// display both
-		$this->carabiner->display(); // OR $this->carabiner->display('both');
-
-		// display group
-		$this->carabiner->display('jquery'); // group name defined as jquery
-
-		// display filterd group
-		$this->carabiner->display('main', 'js'); // group name defined as main, only display JS
-
-		// return string of asset references
-		$string = $this->carabiner->display_string('main');
-	-----------------------------------------------------------------------------------------------
-	Note that the standard display function calls (the first 3 listed above) will only output
-	those assets not associated with a group (which are all included in the 'main' group).  Groups
-	must be explicitly displayed via the 4th call listed above.
-
-
-
-	Since Carabiner won't delete old cached files, you'll need to clear them out manually.
-	To do so programatically:
-	-----------------------------------------------------------------------------------------------
-		// clear css cache
-		$this->carabiner->empty_cache('css');
-
-		//clear js cache
-		$this->carabiner->empty_cache('js');
-
-		// clear both
-		$this->carabiner->empty_cache(); // OR $this->carabiner->empty_cache('both');
-
-		// clear before a certain date
-		$this->carabiner->empty_cache('both', 'now');	// String denoting a time before which cache
-														// files will be removed.  Any string that
-														// strtotime() can take is acceptable.
-														// Defaults to 'now'.
-	-----------------------------------------------------------------------------------------------
-	===============================================================================================
-*/
-
-
-use Illuminate\View\Environment;
-use Illuminate\Config\Repository;
-use Illuminate\Log\Writer;
-
-use Weboap\Carabiner\File;
-use Weboap\Carabiner\Curl;
 
 
 class Carabiner {
@@ -259,7 +71,7 @@ class Carabiner {
 
 	protected $dev;
 	protected $combine;
-
+        
 	protected $minify_js;
 	protected $minify_css;
 	protected $force_curl;
@@ -267,49 +79,94 @@ class Carabiner {
 	private $js  = array('main'=>array());
 	private $css = array('main'=>array());
 
-
-
+       
+        private $carabiner_config = array();
+        private $group = array();
 
     
 
    
     
     /**
-     * Illuminate config repository.
+     * Illuminate setting repository.
      *
-     * @var Illuminate\Config\Repository
+     * @var Illuminate\Config\Repository $setting
      */
-    protected $config;
+    protected $setting;
     
-
     
-      /**
-     * Create a new profiler instance.
+    
+     /**
+     * Create a new view instance.
      *
      * @param  Illuminate\View\Environment  $view
      * @return void
      */
-    protected $view;  
+    protected $view;
+
+    
+     /**
+     * Create a new File instance.
+     *
+     * @param  Weboap\Carabiner\File $file
+     * @return void
+     */
+    protected $file;
+    
+    /**
+     * Create a new Curl instance.
+     *
+     * @param  Curl $curl
+     * @return void
+     */
+    protected $curl;
+    
+    /**
+     * Create a new CssMin instance.
+     *
+     * @param  CssMin $cssmin
+     * @return void
+     */
+    protected $cssmin;
+    
+    /**
+     * Create a new JSMin instance.
+     *
+     * @param  JSMin $jsmin
+     * @return void
+     */
+    protected $jsmin;
+    
+    
+    /**
+     * Create a new URL instance.
+     *
+     * @param  Illuminate\Routing\UrlGenerator $jsmin
+     * @return void
+     */
+    protected $url;
       
       
       
-    public function __construct(  Repository $config, Writer $log, File $file, Curl $curl, Minifycss $minifycss, Jsmin $jsmin)
+    public function __construct(
+                                Config $setting,
+                                File $file,
+                                Curl $curl,
+                                CssMin $cssmin,
+                                JSMin $jsmin,
+                                URL $url
+                                )
     {
     
-        $this->config = $config;
-        $this->log = $log;
+        $this->setting = $setting;
         $this->file = $file;
         $this->curl = $curl;
-        $this->minifycss = $minifycss;
+        $this->cssmin = $cssmin;
         $this->jsmin = $jsmin;
+        $this->url  = $url;
         
+        $this->carabiner_config =  $this->setting->get('carabiner::config');
         
-        
-        $carabiner_config =  $this->config->get('carabiner::carabiner', true);
-        
-        $this->conf($carabiner_config);
-        
-     
     }
     
     
@@ -321,49 +178,91 @@ class Carabiner {
 	*			base_uri(string), dev(bool), combine(bool), minify_js(bool), minify_css(bool), and force_curl(bool) are optional.
 	* @return   Void
 	*/
-	public function conf($config)
+	public function config(array $c = array())
 	{
 
-		foreach ($config as $key => $value)
+		
+              
+                $config = array_merge($this->carabiner_config, $c);
+                
+                foreach ($config as $key => $value)
 		{
-			if($key == 'groups') {
-
-				foreach($value as $group_name => $assets){
-
-					$this->group($group_name, $assets);
-				}
-
-				break;
-			}
-
-			$this->{$key} = $value;
-                              
+			if( $key != '')
+                        {
+                            $this->{$key} = $value;
+                        }
 		}
+                
+                if( isset( $this->groups ))
+                {
+                    foreach( $this->groups as $group_name => $assets){
+    
+                                $this->group($group_name, $assets);
+                            
+                    }
+ 
+                }
+                
+                
+                
+               
 
                     
-            
 
 		// set the default value for base_uri from the config
-		if($this->base_uri == '') $this->base_uri = rtrim($this->config->get('application.url', ''), '/') . '/';
-
+		if( ! isset( $this->base_uri ) || $this->base_uri == '' )
+                {
+                    $this->base_uri = $this->url->to('/').'/';
+                }
+                
 		// use the provided values to define the rest of them
+                $path = public_path().'/';
+                
 
-                $path = rtrim(public_path(), '/') . '/';
+		
+                
+                $this->_validate_folder( $this->script_path = $path.ltrim( $this->script_dir, '/')  );
+               
+                $this->script_uri = $this->base_uri.ltrim( $this->script_dir, '/');
 
+                $this->_validate_folder( $this->style_path = $path.ltrim($this->style_dir, '/')  );
+                
+                $this->style_uri = $this->base_uri.ltrim($this->style_dir, '/');
 
-		$this->script_path = $path.ltrim($this->script_dir, '/');
+		$this->cache_path = $path.ltrim( $this->cache_dir, '/');
+                
+                $this->_validate_folder( $this->cache_path , true  );
+                
+		$this->cache_uri = $this->base_uri.ltrim( $this->cache_dir, '/' );
+                
+               
 
-                $this->script_uri = $this->base_uri.ltrim($this->script_dir, '/');
-
-		$this->style_path = $path.ltrim($this->style_dir, '/');
-		$this->style_uri = $this->base_uri.ltrim($this->style_dir, '/');
-
-		$this->cache_path = $path.$this->cache_dir;
-		$this->cache_uri = $this->base_uri.ltrim($this->cache_dir, '/');
-
-     // $this->log->info('Carabiner: library configured.');
-        
 	}
+        
+        
+        /**
+	* Validate Scripts and Css and cache Folders or Exception
+	* @access	private
+	* @param	String of the path folder. Required
+	* @param	Boolean flag whether to check for writability or not. NOT REQUIRED
+	* @return   Void
+	*/
+        private function _validate_folder( $folder, $writable = false )
+        {
+           
+            if( $folder === ''  || ! is_string( $folder ) || ! $this->file->isDirectory( $this->script_path ))
+                {
+                    throw new MissingPathException( 'i can\'t find your javascripts folder! ( ' . $folder . ' ), make sure its created and set correctly' );
+                }
+                
+            if( $writable )
+            {
+                    if( ! $this->file->isWritable( $folder ) )
+                    throw new WritableFolderException( $folder.' : need to be Writable!' );
+                
+            }
+            
+        }
   
   
   
@@ -481,8 +380,10 @@ class Carabiner {
 	{
 
 		if(!isset($assets['js']) && !isset($assets['css']) ){
-			$this->log->error("Carabiner: The asset group definition named '{$group_name}' does not contain a well formed array.");
-			return;
+			
+                        throw new MissingArgumentException("Carabiner: The asset group definition named '{$group_name}' does not contain a well formed array.");
+			
+                        return;
 		}
 
 		if( isset($assets['js']) )
@@ -539,35 +440,48 @@ class Carabiner {
 	* @param	String flag the asset type to filter a group (e.g. only show 'js' for this group)
 	* @return   Void
 	*/
-	public function display($flag = 'both', $group_filter = NULL)
-	{
+		public function display($flag = 'both', $group_filter = NULL)
+                {	
+                
+                switch($flag){
+                
+                case 'JS':
+                case 'js':
+                                $this->_display_js();
+                                $this->_display_js_string();
+                break;
+                
+                case 'CSS':
+                case 'css':
+                                $this->_display_css();
+                                $this->_display_css_string();
+                break;
+                
+                case 'both':
+                                $this->_display_js();
+                                $this->_display_css();
+                                
+                                $this->_display_js_string();
+                                $this->_display_css_string();
+                break;
+                
+                default:
+                if( isset($this->js[$flag]) && ($group_filter == NULL || $group_filter == 'js') ){
+                                                    $this->_display_js($flag);
+                                                    $this->_display_js_string($flag);
+                                                }
+                
+                
+                if( isset($this->css[$flag]) && ($group_filter == NULL || $group_filter == 'css') ){
+                                                    $this->_display_css($flag);
+                                                    $this->_display_css_string($flag);
+                }
+                
+                break;
+                }
+                }
 
-		switch($flag){
 
-			case 'JS':
-			case 'js':
-				$this->_display_js();
-			break;
-
-			case 'CSS':
-			case 'css':
-				$this->_display_css();
-			break;
-
-			case 'both':
-				$this->_display_js();
-				$this->_display_css();
-			break;
-
-			default:
-				if( isset($this->js[$flag]) && ($group_filter == NULL || $group_filter == 'js') )
-					$this->_display_js($flag);
-
-				if( isset($this->css[$flag]) && ($group_filter == NULL || $group_filter == 'css') )
-					$this->_display_css($flag);
-			break;
-		}
-	}
 
 
 	/**
@@ -605,7 +519,7 @@ class Carabiner {
 
 		if( !isset($this->js[$group]) ): // the group you asked for doesn't exist. This should never happen, but better to be safe than sorry.
 
-			$this->log->error("Carabiner: The JavaScript asset group named '{$group}' does not exist.");
+			throw new MissingArgumentException("Carabiner: The JavaScript asset group named '{$group}' does not exist.");
 			return;
 
 		endif;
@@ -750,7 +664,7 @@ class Carabiner {
 
 		if( !isset($this->css[$group]) ): // the group you asked for doesn't exist. This should never happen, but better to be safe than sorry.
 
-			$this->log->error("Carabiner: The CSS asset group named '{$group}' does not exist.");
+			throw new MissingArgumentException("Carabiner: The CSS asset group named '{$group}' does not exist.");
 			return;
 
 		endif;
@@ -941,26 +855,26 @@ class Carabiner {
 
 		$path = ($flag == 'css') ? $this->style_path : $this->script_path;
 		$ref  = ( $this->isURL($file_ref) ) ? $file_ref : realpath($path.$file_ref);
-
+                
+                $contents = $this->_get_contents( $ref );
+                
 		switch($flag){
 
 			case 'js':
-				$contents = $this->_get_contents( $ref );
-                                            
-                                //$min = new \JSMin();
-				//return $min->minify($contents);
+				
                                 return $this->jsmin->minify($contents);
 			break;
 
 			case 'css':
 				$rel = ( $this->isURL($file_ref) ) ? $file_ref : dirname($this->style_uri.$file_ref).'/';
-				$contents = $this->_get_contents( $ref );
-                //$min = new MinifyCSS();
-                //return $min->minify($contents, array('preserveComments'=> true, 'prependRelativePath' => $rel));
-                
-		return $this->minifycss->minify($contents, array('preserveComments'=> true, 'prependRelativePath' => $rel));
-                	break;
-		}
+				                       
+                        return $this->cssmin->minify($contents, array(
+                                                                      'preserveComments'=> true,
+                                                                      'prependRelativePath' => $rel
+                                                                      )
+                                                     );
+                                 break;
+                         }
 
 	}
 
@@ -974,23 +888,13 @@ class Carabiner {
 	private function _get_contents($ref)
 	{
 
-          
-        
-        
-		if( $this->isURL($ref) && ( $this->force_curl || ini_get('allow_url_fopen') == 0 ) ):
+                $abs_ref = ( substr($ref, 0, 2) == '//' ) ? ('http:' . $ref) : $ref;
                 
-			
-                        $contents = $this->curl->simple_get($ref);
-
+                if( $this->isURL( $abs_ref ) && ( $this->force_curl || ini_get('allow_url_fopen') == 0 ) ):
+                
+                        $contents = $this->curl->get( $abs_ref );
 		else:
-                       
-                        
-                            $contents = @file_get_contents( $ref );
-                        
-                        if($contents === FALSE) {
-                            throw new FileNotFoundException( "Asset does not exist or empty file");
-                        }
-
+                        $contents = $this->file->get( $abs_ref );
 		endif;
 
 		return $contents;
@@ -1007,21 +911,13 @@ class Carabiner {
 	private function _cache($filename, $file_data)
 	{
 
-		if(empty($file_data)):
-			$this->log->debug('Carabiner: Cache file '.$filename.' was empty and therefore not written to disk at '.$this->cache_path);
-			return false;
-		endif;
-
+		if( empty($file_data) ) return false;
+		
 		$filepath = $this->cache_path . $filename;
-		$success = file_put_contents( $filepath, $file_data );
-
-		if($success) :
-			$this->log->debug('Carabiner: Cache file '.$filename.' was written to '.$this->cache_path);
-			return TRUE;
-		else :
-			$this->log->error('Carabiner: There was an error writing cache file '.$filename.' to '.$this->cache_path);
-			return FALSE;
-		endif;
+                
+		$this->file->put( $filepath, $file_data );
+                
+                return true;
 	}
 
 
@@ -1036,7 +932,7 @@ class Carabiner {
 	*/
 	private function _tag($flag, $ref, $cache = FALSE, $media = 'screen')
 	{
-
+                
 		switch($flag){
 
 			case 'css':
@@ -1069,8 +965,10 @@ class Carabiner {
 	*/
 	public function empty_cache($flag = 'both', $before = 'now')
 	{
-	    $files = $this->file->get_filenames($this->cache_path);
-		$before = strtotime($before);
+	    
+            $files = $this->file->files( $this->cache_path );
+            
+	    $before = strtotime($before);
 
 		switch($flag){
 
@@ -1084,11 +982,7 @@ class Carabiner {
 
 					if ( ($ext == $flag) && $fl >= 42 && ( filemtime( $this->cache_path . $file ) < $before) ) {
 
-						$success = unlink( $this->cache_path . $file );
-
-						if($success) : $this->log->debug('Carabiner: Cache file '.$file.' was removed from '.$this->cache_path);
-						else : $this->log->error('Carabiner: There was an error removing cache file '.$file.' from '.$this->cache_path);
-						endif;
+						$this->file->delete( $this->cache_path . $file );
 
 					}
 
@@ -1103,14 +997,12 @@ class Carabiner {
 
 					$ext = substr( strrchr( $file, '.' ), 1 );
 					$fl = strlen(substr( $file, 0, -3 ));
+                                        
+                                        
+					if ( ($ext == 'js' || $ext == 'css') && $fl >= 42 && ( filemtime( $file ) < $before) ) {
 
-					if ( ($ext == 'js' || $ext == 'css') && $fl >= 42 && ( filemtime( $this->cache_path . $file ) < $before) ) {
+						$this->file->delete( $file );
 
-						$success = unlink( $this->cache_path . $file );
-
-						if($success) : $this->log->debug('Carabiner: Cache file '.$file.' was removed from '.$this->cache_path);
-						else : $this->log->error('Carabiner: There was an error removing cache file '.$file.' from '.$this->cache_path);
-						endif;
 					}
 
 				}
@@ -1122,8 +1014,108 @@ class Carabiner {
 	}
 
 
+        
+         /**
+        * function will accept string or array of javascripts and group name
+        * as string
+        * @param mixed $string
+        * @param string $group
+        */
+        
+        public function js_string($string = NULL,$group='main')
+        {
+            
+            $scripts = is_array($string)?$string:array($string);
+            
+            foreach ($scripts as $script){
+                if(strlen($script)){
+                    $this->_js_string[$group][] = $script;
+                }
+            }
+        }
+        
+        
+        /**
+        * function will accept group name as string
+        * @param string $group
+        * @return empty if group not found
+        */
+        
+        private function _display_js_string($group='main')
+        {
+            $script = '';
+            if(!empty($this->_js_string))
+            {
+                if( !isset($this->_js_string[$group]) ): // the group you asked for doesn't exist. This should never happen, but better to be safe than sorry.
 
-	/**
+                 throw new MissingArgumentException("Carabiner: The JavaScript string group named '{$group}' does not exist.");
+                return;
+                
+                endif;
+                
+                $script = implode(';', $this->_js_string[$group]);
+                
+                if($this->minify_js && strlen($script)){
+                   
+
+                    $script = $this->jsmin->minify($script);
+                }
+                
+                echo '<script>'.$script.'</script>';
+            }
+        }
+        
+        
+        
+          /**
+            * function will accept string or array of styles and group name as string
+            * @param mixed $string
+            * @param string $group
+            */
+        
+        public function css_string($string = NULL,$group = 'main'){
+            
+            $styles = is_array($string)?$string:array($string);
+            
+            foreach ($styles as $style){
+                if(strlen($style)){
+                    $this->_css_string[$group][] = $style;
+                }
+            }
+        }
+        
+        
+         /**
+        * function will accept group name as string
+        * @param string $group
+        * @return empty if group not found in css
+        */
+        
+        private function _display_css_string($group = 'main'){
+            $style = '';
+            if(!empty($this->_css_string))
+            {
+                
+                if( !isset($this->css[$group]) ): // the group you asked for doesn't exist. This should never happen, but better to be safe than sorry.
+
+            throw new MissingArgumentException("Carabiner: The CSS string group named '{$group}' does not exist.");
+            return;
+            
+            endif;
+                
+                $style = implode('', $this->_css_string['main']);
+                
+                if($this->minify_css && strlen($style)){
+
+                    $style = $this->cssmin->minify($style);
+                }
+                
+                echo '<style type="text/css">'.$style.'</style>';
+            }
+        }
+
+
+        /**
 	* isURL
 	* Checks if the provided string is a URL. Allows for port, path and query string validations.
 	* This should probably be moved into a helper file, but I hate to add a whole new file for
@@ -1132,34 +1124,15 @@ class Carabiner {
 	* @param	string to be checked
 	* @return   boolean	Returns TRUE/FALSE
 	*/
-	public static function isURL($string)
-	{
-		$pattern = '@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)@';
-		return preg_match($pattern, $string);
-	}
-  
-  
- 
-  
-  
-  
-
-    /**
-     * Get the start time.
-     *
-     * @return int
-     */
-    protected function getStartTime()
-    {
-        if (defined('LARAVEL_START'))
+	
+	public function isURL($value)
         {
-            return LARAVEL_START;
+        
+            $pattern = '@(((https?|ftp):)?//([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)@';
+            
+             return  (boolean) preg_match($pattern, $value);
         }
-
-        return microtime(true);
-    }
+        
 
 }
 
-
-class FileNotFoundException extends \Exception {};
