@@ -121,5 +121,11 @@ Carabiner::display('jquery'); // group name defined as jQuery
 ### Credits
 
 All Credits to original developers I mainly adapted the script for Laravel.
+Thanks also to :
+Joe Scylla : http://code.google.com/p/cssmin/   : "natxet/CssMin"
+linkorb.com/engineering.   : https://github.com/linkorb/jsmin-php    : "linkorb/jsmin-php"
+@shuber https://github.com/hamstar/curl
+ 
+
 
 
