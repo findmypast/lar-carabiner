@@ -133,87 +133,129 @@ class Carabiner {
             */
             protected $cache_uri;
             
-    
+    	     /**
+            *  Dev mode : dev/prod.
+            *
+            * @var boolean
+            */	
             protected $dev  = false;
+            
+             /**
+            *  Flag : Combine assets.
+            *
+            * @var boolean
+            */
             protected $combine = true;
             
+             /**
+            *  Flag : minify scripts.
+            *
+            * @var boolean
+            */
             protected $minify_js = true;
+            
+             /**
+            *  Flag : minify styles.
+            *
+            * @var boolean
+            */
             protected $minify_css = true;
+            
+             /**
+            *  Flag : Force use of curl to download assets.
+            *
+            * @var boolean
+            */
             protected $force_curl = true;
             
+             /**
+            *  Assets Groups.
+            *
+            * @var array
+            */
             protected $groups = array();
+            
+            /**
+            *  single Assets group.
+            *
+            * @var array
+            */
     
+            private $group = array();
+            
+             /**
+            *  Initial scripts Group.
+            *
+            * @var array
+            */
             private $js  = array('main'=>array());
+    
+             /**
+            *  Initial style Group.
+            *
+            * @var array
+            */
+    
             private $css = array('main'=>array());
     
-           
-            protected $carabiner_config = array();
-            
-            
-            private $group = array();
+            /**
+            *  Options.
+            *
+            * @var array
+            */
     
-        
-    
+            protected $options = array();
+            
+
+            	/**
+	         * Illuminate setting repository.
+	         *
+	         * @var Illuminate\Config\Repository $setting
+	         */
+	        protected $setting;
        
+
         
-        /**
-         * Illuminate setting repository.
-         *
-         * @var Illuminate\Config\Repository $setting
-         */
-        protected $setting;
+	         /**
+	         * Create a new File instance.
+	         *
+	         * @param  Weboap\Carabiner\File $file
+	         * @return void
+	         */
+	        protected $file;
         
+	        /**
+	         * Create a new Curl instance.
+	         *
+	         * @param  Curl $curl
+	         * @return void
+	         */
+	        protected $curl;
         
+	        /**
+	         * Create a new CssMin instance.
+	         *
+	         * @param  CssMin $cssmin
+	         * @return void
+	         */
+	        protected $cssmin;
         
-         /**
-         * Create a new view instance.
-         *
-         * @param  Illuminate\View\Environment  $view
-         * @return void
-         */
-        protected $view;
-    
-        
-         /**
-         * Create a new File instance.
-         *
-         * @param  Weboap\Carabiner\File $file
-         * @return void
-         */
-        protected $file;
-        
-        /**
-         * Create a new Curl instance.
-         *
-         * @param  Curl $curl
-         * @return void
-         */
-        protected $curl;
-        
-        /**
-         * Create a new CssMin instance.
-         *
-         * @param  CssMin $cssmin
-         * @return void
-         */
-        protected $cssmin;
-        
-        /**
-         * Create a new JSMin instance.
-         *
-         * @param  JSMin $jsmin
-         * @return void
-         */
-        protected $jsmin;
+	        /**
+	         * Create a new JSMin instance.
+	         *
+	         * @param  JSMin $jsmin
+	         * @return void
+	         */
+	        protected $jsmin;
         
         
-        /**
-         * Create a new URL instance.
-         *
-         * @param  Illuminate\Routing\UrlGenerator $jsmin
-         * @return void
-         */
-        protected $url;
+	        /**
+	         * Create a new URL instance.
+	         *
+	         * @param  Illuminate\Routing\UrlGenerator $url
+	         * @return void
+	         */
+	        protected $url;
           
       
       
@@ -234,8 +276,8 @@ class Carabiner {
             $this->jsmin = $jsmin;
             $this->url  = $url;
             
-            $carabiner_config =  $this->setting->get('carabiner::config');
-             $this->config($carabiner_config);
+            $this->options =  $this->setting->get('carabiner::config');
+            $this->config($this->options);
         }
     
     
