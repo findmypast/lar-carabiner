@@ -118,8 +118,21 @@ class Carabiner {
             * @var string
             */
             protected $cacheDir;
+            
+            /**
+            *  Real Path to the cache directory.
+            *
+            * @var string
+            */
             protected $cache_path;
+            
+             /**
+            *  cache uri.
+            *
+            * @var string
+            */
             protected $cache_uri;
+            
     
             protected $dev  = false;
             protected $combine = true;
@@ -261,11 +274,6 @@ class Carabiner {
                 }
                 
                 
-                
-               
-
-                    
-
 		// set the default value for base_uri from the config
 		if( ! isset( $this->base ) || ! $this->isURL( $this->base ) )
                 {
