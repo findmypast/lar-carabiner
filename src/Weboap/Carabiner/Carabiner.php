@@ -305,7 +305,7 @@ class Carabiner {
 
 			}
                         //validate asset;
-                        $this->validateAsset($d);
+                        $this->validateAsset($this->script_path.$d);
 
 		}else{
 
@@ -832,9 +832,6 @@ class Carabiner {
                 
 			$v = (isset($file['prod']) ) ? 'prod' : 'dev';
                         
-                        //Validate Asset
-                        $this->validateAsset($path.$file[$v] );
-
 			if( (isset($file['minify']) && $file['minify'] == true) || (!isset($file['minify']) && $minify) ):
 
 				$file_data .=  $this->_minify( $flag, $file['dev'] ) . "\n";
