@@ -49,7 +49,7 @@ to publish carabiner config to
 app/config/packages/weboap/carabiner
 ``` 
 
-then visit the config file that you just published to tune.
+then visit the config file that you just published to tune it.
 
 
 
@@ -59,14 +59,14 @@ For usage follow the original post and wiki page as follow
 per original post @ http://ellislab.com/forums/viewthread/117966/
 or https://github.com/EllisLab/CodeIgniter/wiki/Carabiner.
 
-To configure Carabiner using the config() method, do this:
+if you need to configure Carabiner in runetime just use the config() method, like this:
 
 ``` php
 $carabiner_config = array(
     'script_dir' => 'assets/scripts/', 
     'style_dir'  => 'assets/styles/',
     'cache_dir'  => 'assets/cache/',
-    'base_uri'   => $base,
+    'base_uri'   => 'http://www.example.com/'
     'combine'    => TRUE,
     'dev'        => FALSE
 );
