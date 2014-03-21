@@ -92,8 +92,8 @@ Carabiner::css('admin/print.css','print');
 
 // Define JS
 $js = array(
-     array('prototype.js'),
-        array('//ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js'),
+        array('prototype.js'),
+       //or eg: array('//ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js'),
         array('scriptaculous.js')
 );
 
