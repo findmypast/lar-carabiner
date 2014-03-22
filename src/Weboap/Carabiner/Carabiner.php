@@ -75,7 +75,7 @@ class Carabiner {
             *
             * @var string
             */
-            protected $scriptDir  = '';
+            protected $scriptDir;
             
              /**
             *  Real Path to the script directory.
@@ -235,7 +235,7 @@ class Carabiner {
             $this->url  = $url;
             
             $carabiner_config =  $this->setting->get('carabiner::config');
-             $this->config($carabiner_config);
+            $this->config($carabiner_config);
         }
     
     
