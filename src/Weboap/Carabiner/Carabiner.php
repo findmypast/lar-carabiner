@@ -321,22 +321,18 @@ public function config(array $config)
         }
         
         
-	
-        $this->validateFolder( $this->script_path = public_path().DS.ltrim( $this->scriptDir, '/')  );
-       
-        $this->script_uri = $this->base.ltrim( $this->scriptDir, '/');
-
-        $this->validateFolder( $this->style_path = public_path().DS.ltrim($this->styleDir, '/')  );
+	$this->script_path = public_path().DS.ltrim( $this->scriptDir, '/');
+        $this->validateFolder( $this->script_path );
+        $this->script_uri = $this->url->to(  $this->scriptDir ).DS;
         
-        $this->style_uri = $this->base.ltrim($this->styleDir, '/');
+        $this->style_path = public_path().DS.ltrim( $this->styleDir, '/');
+        $this->validateFolder( $this->style_path );
+        $this->style_uri = $this->url->to( $this->styleDir ).DS;
 
 	$this->cache_path = public_path().DS.ltrim( $this->cacheDir, '/');
-        
         $this->validateFolder( $this->cache_path , true  );
+	$this->cache_uri = $this->url->to( $this->cacheDir ).DS;
         
-	$this->cache_uri = $this->base.ltrim( $this->cacheDir, '/' );
-        
-       
 }
         
         

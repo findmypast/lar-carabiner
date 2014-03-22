@@ -21,7 +21,7 @@ return array(
 |
 */
 
-'scriptDir' => '/js/',
+'scriptDir' => 'js/',
 
 
 
@@ -35,7 +35,7 @@ return array(
 |
 */
 
-'styleDir' => '/css/',
+'styleDir' => 'css/',
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +47,7 @@ return array(
 |
 */
 
-'cacheDir' => '/cache/',
+'cacheDir' => 'cache/',
 
 
 
