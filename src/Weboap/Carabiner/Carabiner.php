@@ -56,94 +56,6 @@ use CssMin, JSMin, Curl;
 
 class Carabiner {
 
-<<<<<<< HEAD
-            /**
-            * Base uri of the site, like 'http://www.example.com/'.
-            *
-            * @var string
-            */
-            protected $base;
-            
-             /**
-            * Charset.
-            *
-            * @var string
-            */
-            protected $charset = 'UTF-8';
-            
-             /**
-            *  Path to the script directory relatif to server public root.
-            *
-            * @var string
-            */
-            protected $scriptDir;
-            
-             /**
-            *  Real Path to the script directory.
-            *
-            * @var string
-            */
-            protected $script_path;
-            
-             /**
-            *  Script uri.
-            *
-            * @var string
-            */
-            protected $script_uri;
-            
-             /**
-            *  Path to the css directory relatif to server public root.
-            *
-            * @var string
-            */
-            protected $styleDir;
-            
-            /**
-            *  Real Path to the css directory.
-            *
-            * @var string
-            */
-            protected $style_path;
-            
-             /**
-            *  Script uri.
-            *
-            * @var string
-            */
-            protected $style_uri;
-            
-             /**
-            *  Path to the Cache directory relatif to server public root.
-            *
-            * @var string
-            */
-            protected $cacheDir;
-            
-            /**
-            *  Real Path to the cache directory.
-            *
-            * @var string
-            */
-            protected $cache_path;
-            
-             /**
-            *  cache uri.
-            *
-            * @var string
-            */
-            protected $cache_uri;
-            
-    
-            protected $dev  = false;
-            protected $combine = true;
-            
-            protected $minify_js = true;
-            protected $minify_css = true;
-            protected $force_curl = true;
-            
-            protected $groups = array();
-=======
 /**
 * Base uri of the site, like 'http://www.example.com/'.
 *
@@ -363,10 +275,9 @@ public function __construct(
     $this->cssmin = $cssmin;
     $this->jsmin = $jsmin;
     $this->url  = $url;
->>>>>>> 17e8b2f00ffe76bdd70d888e584d0a4c01123e11
     
     $this->options =  $this->setting->get('carabiner::config');
-    $this->config($this->options);
+    
 }
     
 
@@ -380,8 +291,10 @@ public function __construct(
 public function config(array $config)
 {
        
+       $this->options = array_merge($this->options, $config );
+
        
-        foreach ($config as $key => $value)
+        foreach ($this->options as $key => $value)
 	{
 		if( $key != '')
                 {
@@ -408,21 +321,18 @@ public function config(array $config)
         }
         
         
-	// use the provided values to define the rest of them
-        $path = public_path().'/';
-        
-
-        $this->_validate_folder( $this->script_path = $path.ltrim( $this->scriptDir, '/')  );
+	
+        $this->validateFolder( $this->script_path = public_path().DS.ltrim( $this->scriptDir, '/')  );
        
         $this->script_uri = $this->base.ltrim( $this->scriptDir, '/');
 
-        $this->_validate_folder( $this->style_path = $path.ltrim($this->styleDir, '/')  );
+        $this->validateFolder( $this->style_path = public_path().DS.ltrim($this->styleDir, '/')  );
         
         $this->style_uri = $this->base.ltrim($this->styleDir, '/');
 
-	$this->cache_path = $path.ltrim( $this->cacheDir, '/');
+	$this->cache_path = public_path().DS.ltrim( $this->cacheDir, '/');
         
-        $this->_validate_folder( $this->cache_path , true  );
+        $this->validateFolder( $this->cache_path , true  );
         
 	$this->cache_uri = $this->base.ltrim( $this->cacheDir, '/' );
         
@@ -437,25 +347,12 @@ public function config(array $config)
 * @param	Boolean flag whether to check for writability or not. NOT REQUIRED
 * @return   Void
 */
-private function _validate_folder( $folder, $writable = false )
+private function validateFolder( $folder, $writable = false )
 {
    
-    if( $folder === ''  || ! is_string( $folder ) || ! $this->file->isDirectory( $this->script_path ))
+    if( $folder === ''  || ! is_string( $folder ) || ! $this->file->isDirectory( $folder ))
         {
-<<<<<<< HEAD
-        
-            $this->setting = $setting;
-            $this->file = $file;
-            $this->curl = $curl;
-            $this->cssmin = $cssmin;
-            $this->jsmin = $jsmin;
-            $this->url  = $url;
-            
-            $carabiner_config =  $this->setting->get('carabiner::config');
-            $this->config($carabiner_config);
-=======
             throw new MissingPathException( 'i can\'t find your javascripts folder! ( ' . $folder . ' ), make sure its created and set correctly' );
->>>>>>> 17e8b2f00ffe76bdd70d888e584d0a4c01123e11
         }
         
     if( $writable )
@@ -490,6 +387,10 @@ public function js($dev_file, $prod_file = '', $combine = TRUE, $minify = TRUE, 
 			foreach($dev_file as $file){
 
 				$d = $file[0];
+                                
+                                //validate asset;
+                                $this->validateAsset($this->script_path.$d);
+                
 				$p = (isset($file[1])) ? $file[1] : '';
 				$c = (isset($file[2])) ? $file[2] : $combine;
 				$m = (isset($file[3])) ? $file[3] : $minify;
@@ -502,6 +403,10 @@ public function js($dev_file, $prod_file = '', $combine = TRUE, $minify = TRUE, 
 		}else{
 
 			$d = $dev_file[0];
+                        
+                        //validate asset;
+                        $this->validateAsset($this->script_path.$d);
+                        
 			$p = (isset($dev_file[1])) ? $dev_file[1] : '';
 			$c = (isset($dev_file[2])) ? $dev_file[2] : $combine;
 			$m = (isset($dev_file[3])) ? $dev_file[3] : $minify;
@@ -510,12 +415,14 @@ public function js($dev_file, $prod_file = '', $combine = TRUE, $minify = TRUE, 
 			$this->_asset('js', $d, $p, $c, $m, NULL, $g);
 
 		}
-                //validate asset;
-                $this->validateAsset($this->script_path.$d);
+                
 
 	}else{
-
+                  //validate asset;
+                $this->validateAsset($this->script_path.$dev_file);
+                
 		$this->_asset('js', $dev_file, $prod_file, $combine, $minify, NULL, $group);
+                
 
 	}
 }
@@ -543,6 +450,9 @@ public function css($dev_file, $media = 'screen', $prod_file = '', $combine = TR
 			foreach($dev_file as $file){
                                 
 				$d = $file[0];
+                                //validate asset;
+                                $this->validateAsset($this->style_path.$d);
+                
 				$m = (isset($file[1])) ? $file[1] : $media;
 				$p = (isset($file[2])) ? $file[2] : '';
 				$c = (isset($file[3])) ? $file[3] : $combine;
@@ -556,6 +466,9 @@ public function css($dev_file, $media = 'screen', $prod_file = '', $combine = TR
 		}else{
 
 			$d = $dev_file[0];
+                        //validate css asset
+                        $this->validateAsset( $this->style_path.$d );
+                        
 			$m = (isset($dev_file[1])) ? $dev_file[1] : $media;
 			$p = (isset($dev_file[2])) ? $dev_file[2] : '';
 			$c = (isset($dev_file[3])) ? $dev_file[3] : $combine;
@@ -566,11 +479,12 @@ public function css($dev_file, $media = 'screen', $prod_file = '', $combine = TR
 
 		}
                 
-                //validate css asset
-                $this->validateAsset( $this->style_path.$d );
+                
 
 	}else{
-
+                //validate css asset
+                $this->validateAsset( $this->style_path.$dev_file );
+                
 		$this->_asset('css', $dev_file, $prod_file, $combine, $minify, $media, $group);
 
 	}
@@ -595,9 +509,11 @@ public function group($group_name, $assets)
 	}
 
 	if( isset($assets['js']) )
+                
 		$this->js($assets['js'], '', TRUE, TRUE, $group_name);
 
 	if( isset($assets['css']) )
+        
 		$this->css($assets['css'], 'screen', '', TRUE, TRUE, $group_name);
 
 }
@@ -1364,13 +1280,13 @@ private function validateAsset( $asset )
 {
   if( ! is_string( $asset ) || $asset === '')
    {
-    throw new MissingArgumentException("Carabiner: Missing Asset or Url Name!");
+    throw new MissingArgumentException("Carabiner: Invalid Asset Name or Url Name!");
    }
    
    
    if( ! $this->isURL( $asset ) && ! $this->file->exists( $asset ))
    {
-    throw new MissingArgumentException("Carabiner: The asset named '{$asset}' or url does not exist.");
+    throw new MissingArgumentException("Carabiner: The asset named '{$asset}' is missing or url does not exist (Tip: check your asset folder.).");
    }
   
 }
