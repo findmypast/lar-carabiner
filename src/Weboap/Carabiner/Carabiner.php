@@ -335,34 +335,7 @@ public function config(array $config)
         
 }
         
-        
-/**
-* Validate Scripts and Css and cache Folders or Exception
-* @access	private
-* @param	String of the path folder. Required
-* @param	Boolean flag whether to check for writability or not. NOT REQUIRED
-* @return   Void
-*/
-private function validateFolder( $folder, $writable = false )
-{
-   
-    if( $folder === ''  || ! is_string( $folder ) || ! $this->file->isDirectory( $folder ))
-        {
-            throw new MissingPathException( 'i can\'t find your javascripts folder! ( ' . $folder . ' ), make sure its created and set correctly' );
-        }
-        
-    if( $writable )
-    {
-            if( ! $this->file->isWritable( $folder ) )
-            throw new WritableFolderException( $folder.' : need to be Writable!' );
-        
-    }
-    
-}
-  
-  
-  
-  
+
   
   /**
 * Add JS file to queue
@@ -1286,6 +1259,32 @@ private function validateAsset( $asset )
    }
   
 }
+
+
+/**
+* Validate Scripts and Css and cache Folders or Exception
+* @access	private
+* @param	String of the path folder. Required
+* @param	Boolean flag whether to check for writability or not. NOT REQUIRED
+* @return   Void
+*/
+private function validateFolder( $folder, $writable = false )
+{
+   
+    if( $folder === ''  || ! is_string( $folder ) || ! $this->file->isDirectory( $folder ))
+        {
+            throw new MissingPathException( 'i can\'t find your javascripts folder! ( ' . $folder . ' ), make sure its created and set correctly' );
+        }
+        
+    if( $writable )
+    {
+            if( ! $this->file->isWritable( $folder ) )
+            throw new WritableFolderException( $folder.' : need to be Writable!' );
+        
+    }
+    
+}
+
 
 
 }
