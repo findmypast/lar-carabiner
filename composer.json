@@ -1,7 +1,7 @@
 {
     "name": "weboap/carabiner",
     "description": "A port of CI Carabiner Asset Management by @tonydewan for laravel 4",
-    "keywords": ["framework", "laravel","Carabiner"],
+    "keywords": ["framework", "laravel","Carabiner", "Asset", "css", "js"],
     "license": "BSD-2-Clause",
     "authors": [
         {
