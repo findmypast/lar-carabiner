@@ -22,7 +22,7 @@
     },
     "autoload": {
         "classmap": [
-            "tests/TestCase.php"
+           
         ],
         "psr-0": {
             "Weboap\\Carabiner": "src/"
