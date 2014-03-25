@@ -22,6 +22,4 @@ interface CarabinerManager {
   public function css_string($string = NULL,$group = 'main');
  
  
-  
-
 }

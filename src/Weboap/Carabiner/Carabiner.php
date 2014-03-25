@@ -56,6 +56,7 @@ use CssMin, JSMin, Curl;
 
 class Carabiner implements CarabinerManager {
 
+
 /**
 * Base uri of the site, like 'http://www.example.com/'.
 *
@@ -1285,7 +1286,6 @@ private function validateFolder( $folder, $writable = false )
     }
     
 }
-
 
 
 }
