@@ -54,7 +54,7 @@ use CssMin, JSMin, Curl;
 
 
 
-class Carabiner {
+class Carabiner implements CarabinerManager {
 
 /**
 * Base uri of the site, like 'http://www.example.com/'.
@@ -321,15 +321,15 @@ public function config(array $config)
         }
         
         
-	$this->script_path = public_path().'/'.ltrim( $this->scriptDir, '/');
+	$this->script_path = public_path(). DIRECTORY_SEPARATOR .ltrim( $this->scriptDir, '/');
         $this->validateFolder( $this->script_path );
         $this->script_uri = $this->url->to(  $this->scriptDir ).'/';
         
-        $this->style_path = public_path().'/'.ltrim( $this->styleDir, '/');
+        $this->style_path = public_path(). DIRECTORY_SEPARATOR .ltrim( $this->styleDir, '/');
         $this->validateFolder( $this->style_path );
         $this->style_uri = $this->url->to( $this->styleDir ).'/';
 
-	$this->cache_path = public_path().'/'.ltrim( $this->cacheDir, '/');
+	$this->cache_path = public_path(). DIRECTORY_SEPARATOR .ltrim( $this->cacheDir, '/');
         $this->validateFolder( $this->cache_path , true  );
 	$this->cache_uri = $this->url->to( $this->cacheDir ).'/';
         
@@ -1175,7 +1175,8 @@ private function _display_js_string($group='main')
     * @param string $group
     */
 
-public function css_string($string = NULL,$group = 'main'){
+public function css_string($string = NULL,$group = 'main')
+{
     
     $styles = is_array($string)?$string:array($string);
     

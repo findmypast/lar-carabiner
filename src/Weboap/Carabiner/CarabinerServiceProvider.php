@@ -60,6 +60,11 @@ class CarabinerServiceProvider extends ServiceProvider {
 			});
 		
 		
+		$this->app->bind('Weboap\Carabiner\CarabinerManager', function($app) {
+			return $app['carabiner'];
+		    });
+		
+		
 	}
 	
 
