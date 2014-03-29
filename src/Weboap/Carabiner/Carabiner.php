@@ -54,7 +54,7 @@ use CssMin, JSMin, Curl;
 
 
 
-class Carabiner implements CarabinerManager {
+class Carabiner implements CarabinerManager{
 
 
 /**
