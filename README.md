@@ -16,7 +16,7 @@ Just add to  `composer.json` file:
 ``` json
 {
     "require": {
-        "weboap/carabiner": "1.0.*"
+        "weboap/carabiner": "dev-master"
     }
 }
 ```
