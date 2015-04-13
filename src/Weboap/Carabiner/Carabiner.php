@@ -613,7 +613,7 @@ private function _display_js($group = 'main')
 
 	if( !isset($this->js[$group]) ): // the group you asked for doesn't exist. This should never happen, but better to be safe than sorry.
 
-		throw new MissingArgumentException("Carabiner: The JavaScript asset group named '{$group}' does not exist.");
+		// throw new MissingArgumentException("Carabiner: The JavaScript asset group named '{$group}' does not exist.");
 		return;
 
 	endif;
@@ -758,7 +758,7 @@ private function _display_css($group = 'main')
 
 	if( !isset($this->css[$group]) ): // the group you asked for doesn't exist. This should never happen, but better to be safe than sorry.
 
-		throw new MissingArgumentException("Carabiner: The CSS asset group named '{$group}' does not exist.");
+        // throw new MissingArgumentException("Carabiner: The CSS asset group named '{$group}' does not exist.");
 		return;
 
 	endif;
@@ -1146,7 +1146,7 @@ private function _display_js_string($group='main')
     {
         if( !isset($this->_js_string[$group]) ): // the group you asked for doesn't exist. This should never happen, but better to be safe than sorry.
 
-         throw new MissingArgumentException("Carabiner: The JavaScript string group named '{$group}' does not exist.");
+        // throw new MissingArgumentException("Carabiner: The JavaScript string group named '{$group}' does not exist.");
         return;
         
         endif;
@@ -1197,7 +1197,7 @@ private function _display_css_string($group = 'main'){
         
         if( !isset($this->css[$group]) ): // the group you asked for doesn't exist. This should never happen, but better to be safe than sorry.
 
-    throw new MissingArgumentException("Carabiner: The CSS string group named '{$group}' does not exist.");
+        // throw new MissingArgumentException("Carabiner: The CSS string group named '{$group}' does not exist.");
     return;
     
     endif;
