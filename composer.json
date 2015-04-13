@@ -1,5 +1,5 @@
 {
-    "name": "mocavo/larabiner",
+    "name": "mocavo/carabiner",
     "description": "A port of CI Carabiner Asset Management by @tonydewan and @mocavo for laravel 4",
     "keywords": ["framework", "laravel","Carabiner", "Asset", "css", "js"],
     "license": "BSD-2-Clause",
