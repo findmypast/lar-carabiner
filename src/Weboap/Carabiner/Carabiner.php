@@ -329,11 +329,6 @@ public function config(array $config)
         $this->style_path = public_path(). DIRECTORY_SEPARATOR .ltrim( $this->styleDir, '/');
         $this->validateFolder( $this->style_path );
         $this->style_uri = $this->url->to( $this->styleDir ).'/';
-
-	$this->cache_path = public_path(). DIRECTORY_SEPARATOR .ltrim( $this->cacheDir, '/');
-        $this->validateFolder( $this->cache_path , true  );
-	$this->cache_uri = $this->url->to( $this->cacheDir ).'/';
-        
 }
         
 
