@@ -534,27 +534,27 @@ private function _asset($type, $dev_file, $prod_file = '', $combine, $minify, $m
 * @param	String flag the asset type to filter a group (e.g. only show 'js' for this group)
 * @return   Void
 */
-	public function display($flag = 'both', $group_filter = NULL)
-        {	
-        
+	public function display($flag = 'both', $group = 'main', $group_filter = NULL)
+        {
+
         switch($flag){
         
         case 'JS':
         case 'js':
-                        $this->_display_js();
+                        $this->_display_js($group);
                         $this->_display_js_string();
         break;
         
         case 'CSS':
         case 'css':
-                        $this->_display_css();
+                        $this->_display_css($group);
                         $this->_display_css_string();
         break;
         
         case 'both':
-                        $this->_display_js();
-                        $this->_display_css();
-                        
+                        $this->_display_js($group);
+                        $this->_display_css($group);
+
                         $this->_display_js_string();
                         $this->_display_css_string();
         break;
