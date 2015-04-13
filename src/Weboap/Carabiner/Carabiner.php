@@ -276,11 +276,11 @@ public function __construct(
     $this->cssmin = $cssmin;
     $this->jsmin = $jsmin;
     $this->url  = $url;
-    
-    $this->options =  $this->setting->get('carabiner::config');
-    
+
+    $this->options =  [];
+    $this->config($this->setting->get('carabiner::config'));
 }
-    
+
 
  /**
 * Load Config
