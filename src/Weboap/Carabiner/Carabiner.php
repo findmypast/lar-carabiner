@@ -347,7 +347,7 @@ public function config(array $config)
 * @param	String of the group name with which the asset is to be associated. NOT REQUIRED
 * @return   Void
 */
-public function js($dev_file, $prod_file = '', $combine = TRUE, $minify = TRUE, $group = 'main')
+public function js($dev_file, $group = 'main', $prod_file = '', $combine = TRUE, $minify = TRUE)
 {
 
 	if( is_array($dev_file) ){
@@ -410,7 +410,7 @@ public function js($dev_file, $prod_file = '', $combine = TRUE, $minify = TRUE, 
 * @param	String of the group name with which the asset is to be associated. NOT REQUIRED
 * @return   Void
 */
-public function css($dev_file, $media = 'screen', $prod_file = '', $combine = TRUE, $minify = TRUE, $group = 'main')
+public function css($dev_file, $group = 'main', $media = 'screen', $prod_file = '', $combine = TRUE, $minify = TRUE)
 {
 
 	if( is_array($dev_file) ){
