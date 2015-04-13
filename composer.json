@@ -1,37 +1,39 @@
 {
-    "name": "weboap/carabiner",
-    "description": "A port of CI Carabiner Asset Management by @tonydewan for laravel 4",
+    "name": "mocavo/larabiner",
+    "description": "A port of CI Carabiner Asset Management by @tonydewan and @mocavo for laravel 4",
     "keywords": ["framework", "laravel","Carabiner", "Asset", "css", "js"],
     "license": "BSD-2-Clause",
     "authors": [
         {
             "name": "weboAp",
             "email": "weboap@gmail.com"
+        },
+        {
+            "name": "Mocavo",
+            "email": "dev@mocavo.com"
         }
     ],
     "require": {
         "php": ">=5.3.0",
-	"natxet/CssMin": "dev-master",
-	"linkorb/jsmin-php": "dev-master",
-	"shuber/curl": "dev-master"
-        
-        
+        "natxet/CssMin": "dev-master",
+        "linkorb/jsmin-php": "dev-master",
+        "shuber/curl": "dev-master"
     },
     "autoload": {
         "classmap": [
-           
+
         ],
         "psr-0": {
-            "Weboap\\Carabiner": "src/"
+            "Mocavo\\Carabiner": "src/"
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require-dev": {
-		"illuminate/config": "4.2.*",
-		"illuminate/filesystem": "4.2.*",
-		"illuminate/log": "4.2.*",
-		"mockery/mockery": "dev-master",
-		"way/laravel-test-helpers": "dev-master"
-		
-	}
+        "illuminate/config": "4.2.*",
+        "illuminate/filesystem": "4.2.*",
+        "illuminate/log": "4.2.*",
+        "mockery/mockery": "dev-master",
+        "way/laravel-test-helpers": "dev-master"
+
+    }
 }
