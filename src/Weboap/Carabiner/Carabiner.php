@@ -623,7 +623,7 @@ private function _display_js($group = 'main')
 
 		foreach($this->js[$group] as $ref):
 
-			echo $this->_tag('js', $ref['dev']);
+			echo $this->_tag('js', $ref['dev'] . $this->cache_breaking_string());
 
 		endforeach;
 
@@ -769,7 +769,7 @@ private function _display_css($group = 'main')
 
 			foreach($refs as $ref):
 
-				echo $this->_tag('css', $ref['dev'], FALSE, $media);
+				echo $this->_tag('css', $ref['dev'] . $this->cache_breaking_string(), FALSE, $media);
 
 			endforeach;
 
@@ -1282,6 +1282,11 @@ private function validateFolder( $folder, $writable = false )
     
 }
 
+private function cache_breaking_string()
+{
+    $build_number = getenv('build_number');
+    return empty($build_number) ? '' : "?{$build_number}={$build_number}";
+}
 
 }
 
